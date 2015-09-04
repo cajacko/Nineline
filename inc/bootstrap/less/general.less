@@ -39,7 +39,7 @@ main {
 	#timeline-loop {
 		top: @timeline-header-height;
 		bottom: @timeline-footer-height;
-		overflow: scroll;
+		overflow: hidden;
 		
 		#timeline-wrapper {
 			position: absolute;
@@ -95,26 +95,29 @@ main {
 			font-size: 1em;
 			margin: 0;
 			padding: 0;
+			position: relative;
+			z-index: 2;
 		}
 		
 		.entry-markers {
 			position: relative;
+			z-index: 1;
 			
 			.entry-line {
 				position: absolute;
-			    top: 0;
-			    height: 200px;
+			    top: 5px;
+			    height: 2000px;
 			    border-width: 1px;
 			    border-top: none;
 			    border-style: solid;
 			    border-left: none;
 			    border-bottom: none;
-			    border-color: black;
+			    border-color: #E6E6E6;
 			    
 			    .entry-ball {
 				    height: 7px;
 				    width: 7px;
-				    background-color: black;
+				    background-color: #D2D2D2;
 				    border-radius: 4px;
 				    position: absolute;
 				    top: -5px;

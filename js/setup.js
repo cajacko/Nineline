@@ -13,73 +13,101 @@
     }
 
     function onPageLoad() {
-    }
-	
-    function onPageLoadOrResize () {
+	    
+	    console.log( $( '.entry.not-shown' ).length );
+	    
 	    /**
 		  * Set variables for the positioning functions to use
 		  */
-		    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' );
-			latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' );
-			range = latestDaysSince - earliestDaysSince;
-			
-			timelineWrapperwidth = $( "#timeline-wrapper" ).width();
-			ratio = range / timelineWrapperwidth;
-			
-			negativeOffset = $( "#timeline-wrapper" ).css( "left" ); 
-			negativeOffset = parseInt( negativeOffset );
-			
-			wholeWidth = $( "#timeline-loop" ).width();
-			
-			/**
-			 * Create a 2 dimensional array used to check what 
-			 * pixels an entry is taking up in the timeline.
-			 */
-			table = create2DArray( wholeWidth + 1 );
-			
-			tallest = 0; // Which row is the tallest. Used to se the height of the entry lines.
-			
-			currentItem = 0;
-			itemsPerLoad = 1;
-			lastItem = itemsPerLoad
-			
-	    nineline_layout_entries();
-	    
-	    /**
-		 * Position the date label titles
-		 */
-	    $( '.date-label-title' ).each( function() {
-			nineline_horizontally_position_element( $( this ) );		
-		});
+	    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' );
+		latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' );
+		range = latestDaysSince - earliestDaysSince;
+		
+		timelineWrapperwidth = $( "#timeline-wrapper" ).width();
+		ratio = range / timelineWrapperwidth;
+		
+		negativeOffset = $( "#timeline-wrapper" ).css( "left" ); 
+		negativeOffset = parseInt( negativeOffset );
+		
+		wholeWidth = $( "#timeline-loop" ).width();
+		timelineHeight = $( "#timeline-loop" ).height();
+		
+		delay = 0;
+		timeBetweenLayouts = 25;
 		
 		/**
-		 * Position the date label marks
+		 * Create a 2 dimensional array used to check what 
+		 * pixels an entry is taking up in the timeline.
 		 */
-	    $( '.date-label-mark' ).each( function() {
-			nineline_horizontally_position_element( $( this ) );		
-		});
+		table = create2DArray( wholeWidth + 1 );
+		
+		tallest = 0; // Which row is the tallest. Used to se the height of the entry lines.
+		
+		currentItem = 0;
+		itemsPerLoad = 1;
+		lastItem = itemsPerLoad;
+		
+		continueLayout = true;
+			
+	    nineline_layout_all_entries();
+    }
+	
+    function onPageLoadOrResize () {
+	     
     }
     
     /* -----------------------------
 	SUPPORT FUNCTIONS
 	----------------------------- */
+		function nineline_layout_delay() {
+			setTimeout( function() { 
+				nineline_layout_entries(); 
+			}, delay );
+			
+			delay + timeBetweenLayouts;
+		}
+		
+		function nineline_layout_all_entries() {
+			if( continueLayout ) {
+				nineline_layout_entries();
+		    
+			    /**
+				 * Position the date label titles
+				 */
+			    $( '.date-label-title' ).each( function() {
+					nineline_horizontally_position_element( $( this ) );		
+				});
+				
+				/**
+				 * Position the date label marks
+				 */
+			    $( '.date-label-mark' ).each( function() {
+					nineline_horizontally_position_element( $( this ) );		
+				});
+			}
+		}
+	
 		function nineline_layout_entries() {
-			$( '.entry' ).slice( currentItem, lastItem ).each( function() {
-			    nineline_horizontally_position_element( $( this ) );
-			});
-			
-			console.log( 'currentItem:' + currentItem ); 
-			
-			currentItem = currentItem + itemsPerLoad;
-			lastItem = lastItem + itemsPerLoad;
+			if( continueLayout ) {
+				$( '.entry.not-processed' ).slice( currentItem, lastItem ).each( function() {
+				    nineline_horizontally_position_element( $( this ) );
+				    
+				    //nineline_show_entry( $( this ) );
+				});
+	
+				//currentItem = currentItem + itemsPerLoad;
+				//lastItem = lastItem + itemsPerLoad;
+			}
 		}
 		
 		function nineline_show_entry( element ) {
-			$( element ).animate({
-				opacity: 1
-			}, 100, function() {
-				nineline_layout_entries();
-			});
+			if( continueLayout ) {
+				$( element ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).animate({
+					opacity: 1
+				}, 1000 );
+				
+				nineline_layout_delay();
+			}
 		}
 		
 		/**
@@ -99,148 +127,159 @@
 		 * the function can check where entries are.
 		 */
 		function nineline_vertically_position_element( element, left, width ) {
-			
-			//var leftColumn = left + (negativeOffset/2);
-			/**
-			 * The starting column to put the value in. The negativeOffset is 
-			 * needed to account for the negative space some entries might 
-			 * make on the left of the div.
-			 */
-			var leftColumn = left + negativeOffset; 			
-			var endColumn = leftColumn + width; // The last column to put the value in
-			var columnHeight = $( element ).height();
-			
-			var setRows = true;
-			var rowCount = 0; // Keeps a record of how many free rows there are in a row.
-			var row = 0; // Current row being checked
-			var startRow = 0; // What was the start row of the current streak
-			//var initialColumn = leftColumn;
-			//var columnCount = initialColumn;
-			var startAgain = true;
-			
-			/**
-			 * Find a space big enough to put this entry in without it 
-			 * overlapping another entry.
-			 */
-			while( setRows ) {	
+			if( continueLayout ) {
+				//var leftColumn = left + (negativeOffset/2);
 				/**
-				 * If we've checked that enough rows are free for us to 
-				 * fit in this entry then end the loop
-				 */		
-				if( rowCount > columnHeight ) {
-					setRows = false;
-				} else {
+				 * The starting column to put the value in. The negativeOffset is 
+				 * needed to account for the negative space some entries might 
+				 * make on the left of the div.
+				 */
+				var leftColumn = left + negativeOffset; 			
+				var endColumn = leftColumn + width; // The last column to put the value in
+				var columnHeight = $( element ).height();
+				var maxRow = timelineHeight - columnHeight;
+				
+				var setRows = true;
+				var rowCount = 0; // Keeps a record of how many free rows there are in a row.
+				var row = 0; // Current row being checked
+				var startRow = 0; // What was the start row of the current streak
+				//var initialColumn = leftColumn;
+				//var columnCount = initialColumn;
+				var startAgain = true;
+				var showEntry = true;
+				
+				/**
+				 * Find a space big enough to put this entry in without it 
+				 * overlapping another entry.
+				 */
+				while( setRows ) {	
 					/**
-					 * If the last row check ws unsuccessful, or this 
-					 * is the first iteration then start the rowCount again.
-					 */
-					if( startAgain ) {
-						startRow = row; 
-						startAgain = false;
-						rowCount = 0;
+					 * If we've checked that enough rows are free for us to 
+					 * fit in this entry then end the loop
+					 */	
+					if( row >= maxRow ) {
+						setRows = false;
+						showEntry = false;
+					} else if( rowCount > columnHeight ) {
+						setRows = false;
+					} else {
+						/**
+						 * If the last row check ws unsuccessful, or this 
+						 * is the first iteration then start the rowCount again.
+						 */
+						if( startAgain ) {
+							startRow = row; 
+							startAgain = false;
+							rowCount = 0;
+						}
+	
+						var carryOn = true;
+						var startColumn = leftColumn;
+						
+						/**
+						 * Loops through all the columns in the current 
+						 * row to check if all the cells are free.
+						 */
+						while( carryOn ) {
+							/**
+							 * If the column we are chicking is bigger than the end 
+							 * column then we have come to the end of the row 
+							 * succesfully, without another entry in the way. So we 
+							 * will end this while and move on to check the next row.
+							 */
+							if( startColumn > endColumn ) {
+								var result = true;
+								carryOn = false;
+							} 
+							/**
+							 * Otherwise, if there is an entry in this position then 
+							 * stop the loop and start again with a rowCount of 0.
+							 */
+							else if( table[startColumn][row] ) {
+								var result = false;
+								carryOn = false;
+							} 
+							/**
+							 * Otherwise we have successfully checked that there is 
+							 * no entry in this column so we move onto the next 
+							 * column.
+							 */
+							else {
+								startColumn++;
+							}
+						}
+						
+						/**
+						 * If there was no entry in the way then move onto 
+						 * the next row. Otherwise start the rowCount again.
+						 */
+						if( result ) {
+							rowCount++;
+						} else {
+							startAgain = true;
+						}
+						
+						row++; // Move to the next row
 					}
-
-					var carryOn = true;
-					var startColumn = leftColumn;
 					
+				}
+				
+				if( showEntry ) {	
 					/**
-					 * Loops through all the columns in the current 
-					 * row to check if all the cells are free.
+					 * Indicate where the current element is in the 
+					 * table, so that no other elements will get 
+					 * placed on top of it.
 					 */
-					while( carryOn ) {
-						/**
-						 * If the column we are chicking is bigger than the end 
-						 * column then we have come to the end of the row 
-						 * succesfully, without another entry in the way. So we 
-						 * will end this while and move on to check the next row.
-						 */
-						if( startColumn > endColumn ) {
-							var result = true;
-							carryOn = false;
-						} 
-						/**
-						 * Otherwise, if there is an entry in this position then 
-						 * stop the loop and start again with a rowCount of 0.
-						 */
-						else if( table[startColumn][row] ) {
-							var result = false;
-							carryOn = false;
-						} 
-						/**
-						 * Otherwise we have successfully checked that there is 
-						 * no entry in this column so we move onto the next 
-						 * column.
-						 */
-						else {
-							startColumn++;
+					for (var column = leftColumn; column <= endColumn; column++) {
+						for (var columnRow = startRow; columnRow <= row; columnRow++) {
+							table[column][columnRow] = 'set';
 						}
 					}
 					
-					/**
-					 * If there was no entry in the way then move onto 
-					 * the next row. Otherwise start the rowCount again.
-					 */
-					if( result ) {
-						rowCount++;
-					} else {
-						startAgain = true;
+					if(tallest < row) {
+						tallest = row;
 					}
 					
-					row++; // Move to the next row
-				}
-				
-			}
-			
-			/**
-			 * Indicate where the current element is in the 
-			 * table, so that no other elements will get 
-			 * placed on top of it.
-			 */
-			for (var column = leftColumn; column <= endColumn; column++) {
-				for (var columnRow = startRow; columnRow <= row; columnRow++) {
-					table[column][columnRow] = 'set';
+					$( element ).css( "top", startRow );
+					//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
+					//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
+					
+					nineline_show_entry( element );
+				} else {
+					$( element ).removeClass( 'not-processed' );
+					nineline_layout_entries();
 				}
 			}
-			
-			if(tallest < row) {
-				tallest = row;
-			}
-			
-			$( element ).css( "top", startRow );
-			//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
-			//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
-			
-			nineline_show_entry( element );
 		}
 	
 		function nineline_horizontally_position_element( element ) {
-			var entryStartDaysSince = $( element ).attr( "data-start-days-since" );
-			var entryEndDaysSince = $( element ).attr( "data-end-days-since" );
-			
-			var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio;
-			
-			if( $( element ).hasClass( 'timeline-line' ) ) {
-				var width = $( element ).css( 'border-width' );
-				width = parseInt( width );
-			} else {
-				var width = $( element ).width();
-			}
-			/*
-			var spanWidth = $(this).find('span').outerWidth(true);
-			
-			if(spanWidth < width) {
-				width = spanWidth;
-				$(this).width(width);
-			}
-			*/
-			
-			var left = Math.floor( middle - ( width / 2 ) );		
-			$( element ).css( "left", left );
-			
-			//return [ left: left, right: right ];
-			
-			if( $( element ).hasClass( 'entry' ) ) {
-				nineline_vertically_position_element( element, left, width )
+			if( continueLayout ) {
+				var entryStartDaysSince = $( element ).attr( "data-start-days-since" );
+				var entryEndDaysSince = $( element ).attr( "data-end-days-since" );
+				
+				var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio;
+				
+				if( $( element ).hasClass( 'timeline-line' ) ) {
+					var width = $( element ).css( 'border-width' );
+					width = parseInt( width );
+				} else {
+					var width = $( element ).width();
+					
+					var entryWrapWidth = $( element ).find( '.entry-wrap' ).width();
+					var lineLeft = entryWrapWidth / 2;
+					
+					$( element ).find( '.entry-line' ).css( 'left', lineLeft );
+				}
+
+				/**
+				 * Horizontally position the entry
+				 */
+				var left = Math.floor( middle - ( width / 2 ) );		
+				$( element ).css( "left", left );
+
+				if( $( element ).hasClass( 'entry' ) ) {
+					nineline_vertically_position_element( element, left, width )
+				}
 			}
 		}
 		
