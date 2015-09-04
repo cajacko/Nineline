@@ -5,4 +5,4 @@
 		<div class="entry-line"></div>
 	</article>
 	
-<?php endif; ?>
+<?php endif; ?> 
