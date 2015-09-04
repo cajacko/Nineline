@@ -6324,7 +6324,7 @@ main {
 #timeline #timeline-loop {
   top: 60px;
   bottom: 40px;
-  overflow: scroll;
+  overflow: hidden;
 }
 #timeline #timeline-loop #timeline-wrapper {
   position: absolute;
@@ -6371,25 +6371,28 @@ main {
   font-size: 1em;
   margin: 0;
   padding: 0;
+  position: relative;
+  z-index: 2;
 }
 .entry .entry-wrap .entry-markers {
   position: relative;
+  z-index: 1;
 }
 .entry .entry-wrap .entry-markers .entry-line {
   position: absolute;
   top: 0;
-  height: 200px;
+  height: 2000px;
   border-width: 1px;
   border-top: none;
   border-style: solid;
   border-left: none;
   border-bottom: none;
-  border-color: black;
+  border-color: #E6E6E6;
 }
 .entry .entry-wrap .entry-markers .entry-line .entry-ball {
   height: 7px;
   width: 7px;
-  background-color: black;
+  background-color: #D2D2D2;
   border-radius: 4px;
   position: absolute;
   top: -5px;

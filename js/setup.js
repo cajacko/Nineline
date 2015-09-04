@@ -13,6 +13,9 @@
     }
 
     function onPageLoad() {
+	    
+	    console.log( $( '.entry.not-shown' ).length );
+	    
 	    /**
 		  * Set variables for the positioning functions to use
 		  */
@@ -75,18 +78,20 @@
 	
 		function nineline_layout_entries() {
 			if( continueLayout ) {
-				$( '.entry' ).slice( currentItem, lastItem ).each( function() {
+				$( '.entry.not-processed' ).slice( currentItem, lastItem ).each( function() {
 				    nineline_horizontally_position_element( $( this ) );
+				    
+				    //nineline_show_entry( $( this ) );
 				});
 	
-				currentItem = currentItem + itemsPerLoad;
-				lastItem = lastItem + itemsPerLoad;
+				//currentItem = currentItem + itemsPerLoad;
+				//lastItem = lastItem + itemsPerLoad;
 			}
 		}
 		
 		function nineline_show_entry( element ) {
 			if( continueLayout ) {
-				$( element ).animate({
+				$( element ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).animate({
 					opacity: 1
 				}, 100, function() {
 					nineline_layout_entries();
@@ -121,6 +126,7 @@
 				var leftColumn = left + negativeOffset; 			
 				var endColumn = leftColumn + width; // The last column to put the value in
 				var columnHeight = $( element ).height();
+				var maxRow = timelineHeight - columnHeight;
 				
 				var setRows = true;
 				var rowCount = 0; // Keeps a record of how many free rows there are in a row.
@@ -129,6 +135,7 @@
 				//var initialColumn = leftColumn;
 				//var columnCount = initialColumn;
 				var startAgain = true;
+				var showEntry = true;
 				
 				/**
 				 * Find a space big enough to put this entry in without it 
@@ -138,8 +145,11 @@
 					/**
 					 * If we've checked that enough rows are free for us to 
 					 * fit in this entry then end the loop
-					 */		
-					if( rowCount > columnHeight ) {
+					 */	
+					if( row >= maxRow ) {
+						setRows = false;
+						showEntry = false;
+					} else if( rowCount > columnHeight ) {
 						setRows = false;
 					} else {
 						/**
@@ -203,26 +213,31 @@
 					
 				}
 				
-				/**
-				 * Indicate where the current element is in the 
-				 * table, so that no other elements will get 
-				 * placed on top of it.
-				 */
-				for (var column = leftColumn; column <= endColumn; column++) {
-					for (var columnRow = startRow; columnRow <= row; columnRow++) {
-						table[column][columnRow] = 'set';
+				if( showEntry ) {	
+					/**
+					 * Indicate where the current element is in the 
+					 * table, so that no other elements will get 
+					 * placed on top of it.
+					 */
+					for (var column = leftColumn; column <= endColumn; column++) {
+						for (var columnRow = startRow; columnRow <= row; columnRow++) {
+							table[column][columnRow] = 'set';
+						}
 					}
+					
+					if(tallest < row) {
+						tallest = row;
+					}
+					
+					$( element ).css( "top", startRow );
+					//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
+					//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
+					
+					nineline_show_entry( element );
+				} else {
+					$( element ).removeClass( 'not-processed' );
+					nineline_layout_entries();
 				}
-				
-				if(tallest < row) {
-					tallest = row;
-				}
-				
-				$( element ).css( "top", startRow );
-				//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
-				//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
-				
-				nineline_show_entry( element );
 			}
 		}
 	
@@ -238,21 +253,19 @@
 					width = parseInt( width );
 				} else {
 					var width = $( element ).width();
+					
+					var entryWrapWidth = $( element ).find( '.entry-wrap' ).width();
+					var lineLeft = entryWrapWidth / 2;
+					
+					$( element ).find( '.entry-line' ).css( 'left', lineLeft );
 				}
-				/*
-				var spanWidth = $(this).find('span').outerWidth(true);
-				
-				if(spanWidth < width) {
-					width = spanWidth;
-					$(this).width(width);
-				}
-				*/
-				
+
+				/**
+				 * Horizontally position the entry
+				 */
 				var left = Math.floor( middle - ( width / 2 ) );		
 				$( element ).css( "left", left );
-				
-				//return [ left: left, right: right ];
-				
+
 				if( $( element ).hasClass( 'entry' ) ) {
 					nineline_vertically_position_element( element, left, width )
 				}
