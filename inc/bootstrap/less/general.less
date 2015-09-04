@@ -9,6 +9,7 @@ main {
 @timeline-header-height: 60px;
 @timeline-footer-height: 40px;
 @timeline-border: 1px solid #9C9C9C;
+@timeline-label-mark-height: 10px;
 
 #timeline {
 	display: inline-block;
@@ -53,6 +54,28 @@ main {
 		bottom: 0;
 		height: @timeline-footer-height;
 		border-top: @timeline-border;
+		
+		#timeline-footer-wrapper {
+			position: absolute;
+			height: 100%;
+			left: @timeline-max-width / 2;
+			right: @timeline-max-width / 2;
+			
+			.date-label-title, .date-label-mark {
+				position: absolute;
+			}
+			
+			.date-label-mark {
+				height: @timeline-label-mark-height;
+				border-width: 5px;
+				top: -@timeline-label-mark-height;
+			    border-top: none;
+			    border-style: solid;
+			    border-left: none;
+			    border-bottom: none;
+			    border-color: black;
+			}
+		} 
 	}	
 }
 
@@ -64,10 +87,37 @@ main {
 	text-align: center;
 	padding: @entry-padding;
 	margin: @entry-padding 0 ( @entry-padding * 2 ) 0;
+	opacity: 0;
 	
 	.entry-title {
 		font-size: 1em;
 		margin: 0;
 		padding: 0;
+	}
+	
+	.entry-markers {
+		position: relative;
+		
+		.entry-line {
+			position: absolute;
+		    top: 0;
+		    height: 200px;
+		    border-width: 1px;
+		    border-top: none;
+		    border-style: solid;
+		    border-left: none;
+		    border-bottom: none;
+		    border-color: black;
+		    
+		    .entry-ball {
+			    height: 7px;
+			    width: 7px;
+			    background-color: black;
+			    border-radius: 4px;
+			    position: absolute;
+			    top: -5px;
+			    left: -3px;
+			}
+		}
 	}
 }

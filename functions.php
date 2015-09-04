@@ -170,11 +170,22 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			return false;
 		}
 		
-		$date_array = explode("-", $date);	
-		$days_since = $date_array[2] + (31 * ($date_array[1] + (12 * $date_array[0])));
-		
 		nineline_echo_date_data( $start_date, 'start' );
 		nineline_echo_date_data( $end_date, 'end' );
+	}
+	
+	function nineline_date_data( $date ) {
+		$date_array = explode("-", $date);	
+		$days_since = $date_array[2] + ( 31 * ( $date_array[1] + ( 12 * $date_array[0] ) ) );
+		
+		$array = array(
+			'year' => $date_array[0],
+			'month' => $date_array[1],
+			'day' => $date_array[2],
+			'days_since' => $days_since,
+		);
+		
+		return $array;
 	}
 	
 	function nineline_the_entry_classes() {
@@ -186,13 +197,12 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 	}
 	
 	function nineline_echo_date_data( $date, $type) {
-		$date_array = explode( "-", $date );		
-		$days_since = $date_array[2] + ( 31 * ( $date_array[1] + ( 12 * $date_array[0] ) ) );
+		$date_vars = nineline_date_data( $date );
 		
-		echo ' data-'. $type .'-year="' . $date_array[0] . '"';
-		echo ' data-'. $type .'-month="' . $date_array[1] . '"';
-		echo ' data-'. $type .'-day="' . $date_array[2] . '"';
-		echo ' data-'. $type .'-days_since="' . $days_since . '"';
+		echo ' data-'. $type .'-year="' . $date_vars['year'] . '"';
+		echo ' data-'. $type .'-month="' . $date_vars['month'] . '"';
+		echo ' data-'. $type .'-day="' . $date_vars['day'] . '"';
+		echo ' data-'. $type .'-days-since="' . $date_vars['days_since'] . '"';
 	}
 	
 	function nineline_test_positions( $max_left, $max_top ) {
@@ -200,4 +210,34 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		$top = rand( -100, $max_top );
 		
 		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
+	}
+	
+	function nineline_echo_date_label( $date, $title ) {
+		$days_since = nineline_date_data( $date );
+		echo '<div class="date-label">';
+		echo '<span class="date-label-title" data-start-days-since="' . $days_since['days_since'] . '" data-end-days-since="' . $days_since['days_since'] . '">';
+		echo $title; 
+		echo '</span>';
+		echo '<div class="date-label-mark timeline-line" data-start-days-since="' . $days_since['days_since'] . '" data-end-days-since="' . $days_since['days_since'] . '"></div></div>';
+	}
+	
+	function nineline_timeline_scale() {
+		global $earliest_entry_date, $latest_entry_date;
+		
+		$end_date_data = nineline_date_data( $latest_entry_date );
+		$start_date_data = nineline_date_data( $earliest_entry_date );
+		
+		$range_days = $end_date_data['days_since'] - $start_date_data['days_since'];
+		$range_years = $range_days / 365;
+		$range_months = $range_days / 12;
+		
+		if( $range_years > 100 ) {
+			for( $i = $start_date_data['year']; $i <= $end_date_data['year']; $i++ ) {
+				if($i % 20 == 0) {
+					nineline_echo_date_label( $i . '-01-01', $i );
+				}
+			}
+		}
+		
+		
 	}

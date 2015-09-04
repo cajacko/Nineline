@@ -38,11 +38,9 @@
 			</div>
 			
 			<footer id="timeline-footer"<?php nineline_the_data( 'footer' ); ?>>
-				<span class="date-label">1980</span>
-				<span class="date-label">2000</span>
-				<span class="date-label">2020</span>
-				<span class="date-label">2040</span>
-				<span class="date-label">2060</span>
+				<div id="timeline-footer-wrapper">
+					<?php nineline_timeline_scale(); ?>
+				</div>
 			</footer>
 		
 		<?php endif; ?>
