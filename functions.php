@@ -91,14 +91,21 @@ FILTER ENTRIES
 DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 ----------------------------- */	
 	global $earliest_entry_date, $earliest_entry_value, $latest_entry_date, $latest_entry_value;
+	global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 	
 	function nineline_update_globals() {
 		global $earliest_entry_date, $earliest_entry_value, $latest_entry_date, $latest_entry_value;
+		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 		
 		$start_date = get_post_meta( get_the_ID(), 'start_date', true );
 		$start_date_value = get_post_meta( get_the_ID(), 'start_date_value', true );
 
 		if( $start_date != '' && $start_date_value != '' ) {
+			$current_start_date = $start_date;
+			$current_start_value = $start_date_value;
+			$current_end_date = $start_date;
+			$current_end_value = $start_date_value;
+			
 			if( ( !isset( $earliest_entry_date ) || !isset( $earliest_entry_value ) || !isset( $latest_entry_date ) || !isset( $latest_entry_value ) )) {
 				$earliest_entry_date = $start_date;
 				$earliest_entry_value = $start_date_value;
@@ -124,6 +131,11 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 				$end_date_value = $start_date_value;
 			}
 			
+			if( $end_date != '' && $end_date_value != '' ) {
+				$current_end_date = $end_date;
+				$current_end_value = $end_date_value;
+			}
+			
 			if( !isset( $latest_entry_date ) || !isset( $latest_entry_value ) ) {
 				$latest_entry_date = $end_date;
 				$latest_entry_value = $end_date_value;
@@ -134,6 +146,11 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			
 			return true;
 		} else {
+			unset( $current_start_date );
+			unset( $current_start_value );
+			unset( $current_end_date );
+			unset( $current_end_value );
+			
 			return false;
 		}
 	}
@@ -148,5 +165,24 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			echo ' data-latest-value="' . $latest_entry_value . '"';
 		} else {
 			return false;
+		}
+	}
+	
+	function nineline_the_entry_data() {
+		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
+		
+		if( isset( $current_start_date ) && isset( $current_start_value ) ) {
+			echo ' data-start-date="' . $current_start_date . '"';
+			echo ' data-start-date-value="' . $current_start_value . '"';
+			
+			if( isset( $current_start_date ) && isset( $current_start_value ) ) {
+				echo ' data-end-date="' . $current_end_date . '"';
+				echo ' data-end-date-value="' . $current_end_value . '"';
+			} else {
+				echo ' data-end-date="' . $current_start_date . '"';
+				echo ' data-end-date-value="' . $current_start_value . '"';
+			}
+		} else {
+			return false;	
 		}
 	}

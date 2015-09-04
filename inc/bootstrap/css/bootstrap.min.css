@@ -6288,3 +6288,64 @@ button.close {
     display: none !important;
   }
 }
+html,
+body,
+main,
+#timeline {
+  height: 100%;
+}
+main {
+  padding: 60px 20px;
+}
+#timeline {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+}
+#timeline #timeline-header,
+#timeline #timeline-loop,
+#timeline #timeline-footer {
+  position: absolute;
+  width: 100%;
+}
+#timeline #timeline-header {
+  top: 0;
+  height: 60px;
+  border-bottom: 1px solid #9c9c9c;
+}
+#timeline #timeline-header #timeline-title {
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  font-size: 1.5em;
+  text-align: center;
+}
+#timeline #timeline-loop {
+  top: 60px;
+  bottom: 40px;
+}
+#timeline #timeline-loop #timeline-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100px;
+  right: 100px;
+}
+#timeline #timeline-footer {
+  bottom: 0;
+  height: 40px;
+  border-top: 1px solid #9c9c9c;
+}
+.entry {
+  position: absolute;
+  max-width: 200px;
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0 20px 0;
+}
+.entry .entry-title {
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+}
