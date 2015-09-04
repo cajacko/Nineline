@@ -85,38 +85,41 @@ main {
 	position: absolute;
 	max-width: @timeline-max-width;
 	text-align: center;
-	padding: @entry-padding;
-	margin: @entry-padding 0 ( @entry-padding * 2 ) 0;
 	opacity: 0;
 	
-	.entry-title {
-		font-size: 1em;
-		margin: 0;
-		padding: 0;
-	}
+	.entry-wrap {
+		padding: @entry-padding;
+		//margin: @entry-padding 0 ( @entry-padding * 2 ) 0;
 	
-	.entry-markers {
-		position: relative;
+		.entry-title {
+			font-size: 1em;
+			margin: 0;
+			padding: 0;
+		}
 		
-		.entry-line {
-			position: absolute;
-		    top: 0;
-		    height: 200px;
-		    border-width: 1px;
-		    border-top: none;
-		    border-style: solid;
-		    border-left: none;
-		    border-bottom: none;
-		    border-color: black;
-		    
-		    .entry-ball {
-			    height: 7px;
-			    width: 7px;
-			    background-color: black;
-			    border-radius: 4px;
-			    position: absolute;
-			    top: -5px;
-			    left: -3px;
+		.entry-markers {
+			position: relative;
+			
+			.entry-line {
+				position: absolute;
+			    top: 0;
+			    height: 200px;
+			    border-width: 1px;
+			    border-top: none;
+			    border-style: solid;
+			    border-left: none;
+			    border-bottom: none;
+			    border-color: black;
+			    
+			    .entry-ball {
+				    height: 7px;
+				    width: 7px;
+				    background-color: black;
+				    border-radius: 4px;
+				    position: absolute;
+				    top: -5px;
+				    left: -3px;
+				}
 			}
 		}
 	}

@@ -6362,19 +6362,20 @@ main {
   position: absolute;
   max-width: 200px;
   text-align: center;
-  padding: 10px;
-  margin: 10px 0 20px 0;
   opacity: 0;
 }
-.entry .entry-title {
+.entry .entry-wrap {
+  padding: 10px;
+}
+.entry .entry-wrap .entry-title {
   font-size: 1em;
   margin: 0;
   padding: 0;
 }
-.entry .entry-markers {
+.entry .entry-wrap .entry-markers {
   position: relative;
 }
-.entry .entry-markers .entry-line {
+.entry .entry-wrap .entry-markers .entry-line {
   position: absolute;
   top: 0;
   height: 200px;
@@ -6385,7 +6386,7 @@ main {
   border-bottom: none;
   border-color: black;
 }
-.entry .entry-markers .entry-line .entry-ball {
+.entry .entry-wrap .entry-markers .entry-line .entry-ball {
   height: 7px;
   width: 7px;
   background-color: black;
