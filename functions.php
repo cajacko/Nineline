@@ -106,7 +106,7 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			$current_end_date = $start_date;
 			$current_end_value = $start_date_value;
 			
-			if( ( !isset( $earliest_entry_date ) || !isset( $earliest_entry_value ) || !isset( $latest_entry_date ) || !isset( $latest_entry_value ) )) {
+			if( ( !isset( $earliest_entry_date ) || !isset( $earliest_entry_value ) || !isset( $latest_entry_date ) || !isset( $latest_entry_value ) ) ) {
 				$earliest_entry_date = $start_date;
 				$earliest_entry_value = $start_date_value;
 				$latest_entry_date = $start_date;
@@ -155,34 +155,50 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		}
 	}
 	
-	function nineline_set_timeline_data() {
-		global $earliest_entry_date, $earliest_entry_value, $latest_entry_date, $latest_entry_value;
+	function nineline_the_data( $type = 'entry' ) {
 		
-		if( isset( $earliest_entry_date ) && isset( $earliest_entry_value ) && isset( $latest_entry_date ) && isset( $latest_entry_value ) ) {
-			echo ' data-earliest-date="' . $earliest_entry_date . '"';
-			echo ' data-earliest-value="' . $earliest_entry_value . '"';
-			echo ' data-latest-date="' . $latest_entry_date . '"';
-			echo ' data-latest-value="' . $latest_entry_value . '"';
+		if( $type == 'entry' && isset( $current_start_date ) && isset( $current_end_date ) ) {
+			global $current_start_date, $current_end_date;
+			
+			$start_date = $current_start_date;
+			$end_date = $current_end_date;
+		} elseif( isset( $earliest_entry_date ) && isset( $latest_entry_date ) ) {
+			global $earliest_entry_date, $latest_entry_date;
+			
+			$start_date = $earliest_entry_date;
+			$end_date = $latest_entry_date;
 		} else {
 			return false;
 		}
+		
+		$date_array = explode("-", $date);	
+		$days_since = $date_array[2] + (31 * ($date_array[1] + (12 * $date_array[0])));
+		
+		nineline_echo_date_data( $start_date, 'start' );
+		nineline_echo_date_data( $end_date, 'end' );
 	}
 	
-	function nineline_the_entry_data() {
+	function nineline_the_entry_classes() {
 		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 		
-		if( isset( $current_start_date ) && isset( $current_start_value ) ) {
-			echo ' data-start-date="' . $current_start_date . '"';
-			echo ' data-start-date-value="' . $current_start_value . '"';
-			
-			if( isset( $current_start_date ) && isset( $current_start_value ) ) {
-				echo ' data-end-date="' . $current_end_date . '"';
-				echo ' data-end-date-value="' . $current_end_value . '"';
-			} else {
-				echo ' data-end-date="' . $current_start_date . '"';
-				echo ' data-end-date-value="' . $current_start_value . '"';
-			}
-		} else {
-			return false;	
-		}
+		if( isset( $current_start_value ) && isset( $current_end_value ) && $current_start_value != $current_end_value ) {
+			echo ' entry_is_duration';
+		}	
+	}
+	
+	function nineline_echo_date_data( $date, $type) {
+		$date_array = explode( "-", $date );		
+		$days_since = $date_array[2] + ( 31 * ( $date_array[1] + ( 12 * $date_array[0] ) ) );
+		
+		echo ' data-'. $type .'-year="' . $date_array[0] . '"';
+		echo ' data-'. $type .'-month="' . $date_array[1] . '"';
+		echo ' data-'. $type .'-day="' . $date_array[2] . '"';
+		echo ' data-'. $type .'-days_since="' . $days_since . '"';
+	}
+	
+	function nineline_test_positions( $max_left, $max_top ) {
+		$left = rand( 0, $max_left );
+		$top = rand( 0, $max_top );
+		
+		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
 	}
