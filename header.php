@@ -6,12 +6,6 @@
  *
  * @package Nineline
  */
- 
- 	//Used to load posts for an infinite scroll effect
-	if( $_GET['action'] == 'load_posts' ){
-		get_template_part( 'sections/timeline-loop' ); //Skip all the head info and load only the posts html
-		exit; //Prevent any other html or scripts from rendering
-	} 
 ?>
 
 	<!DOCTYPE html>
