@@ -6324,6 +6324,7 @@ main {
 #timeline #timeline-loop {
   top: 60px;
   bottom: 40px;
+  overflow: scroll;
 }
 #timeline #timeline-loop #timeline-wrapper {
   position: absolute;
@@ -6337,15 +6338,60 @@ main {
   height: 40px;
   border-top: 1px solid #9c9c9c;
 }
+#timeline #timeline-footer #timeline-footer-wrapper {
+  position: absolute;
+  height: 100%;
+  left: 100px;
+  right: 100px;
+}
+#timeline #timeline-footer #timeline-footer-wrapper .date-label-title,
+#timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
+  position: absolute;
+}
+#timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
+  height: 10px;
+  border-width: 5px;
+  top: -10px;
+  border-top: none;
+  border-style: solid;
+  border-left: none;
+  border-bottom: none;
+  border-color: black;
+}
 .entry {
   position: absolute;
   max-width: 200px;
   text-align: center;
-  padding: 10px;
-  margin: 10px 0 20px 0;
+  opacity: 0;
 }
-.entry .entry-title {
+.entry .entry-wrap {
+  padding: 10px;
+}
+.entry .entry-wrap .entry-title {
   font-size: 1em;
   margin: 0;
   padding: 0;
+}
+.entry .entry-wrap .entry-markers {
+  position: relative;
+}
+.entry .entry-wrap .entry-markers .entry-line {
+  position: absolute;
+  top: 0;
+  height: 200px;
+  border-width: 1px;
+  border-top: none;
+  border-style: solid;
+  border-left: none;
+  border-bottom: none;
+  border-color: black;
+}
+.entry .entry-wrap .entry-markers .entry-line .entry-ball {
+  height: 7px;
+  width: 7px;
+  background-color: black;
+  border-radius: 4px;
+  position: absolute;
+  top: -5px;
+  left: -3px;
 }
