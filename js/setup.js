@@ -14,7 +14,7 @@
 
     function onPageLoad() {
 	    
-	    console.log( $( '.entry.not-shown' ).length );
+	    nineline_load_more_entries();
 	    
 	    /**
 		  * Set variables for the positioning functions to use
@@ -47,6 +47,8 @@
 		itemsPerLoad = 1;
 		lastItem = itemsPerLoad;
 		
+		page = 1;
+		
 		continueLayout = true;
 			
 	    nineline_layout_all_entries();
@@ -59,6 +61,31 @@
     /* -----------------------------
 	SUPPORT FUNCTIONS
 	----------------------------- */
+		function nineline_load_more_entries() {
+			$( '#load-more' ).click( function() {
+				event.preventDefault();
+				
+				$( '.processed' ).hide();
+				page++;
+				
+				table = create2DArray( wholeWidth + 1 );
+				
+				nineline_layout_entries();
+			});	
+			
+			$( '#prev' ).click( function() {
+				event.preventDefault();
+				
+				$( '.entry' ).each( function() {
+					if( $( this ).attr( 'data-page' ) == ( page - 1 ) ) {
+						$( this ).show( 'slow' );
+					} else {
+						$( this ).hide( 'slow' );
+					}	
+				});
+			});
+		}
+	
 		function nineline_layout_delay() {
 			setTimeout( function() { 
 				nineline_layout_entries(); 
@@ -89,20 +116,21 @@
 	
 		function nineline_layout_entries() {
 			if( continueLayout ) {
-				$( '.entry.not-processed' ).slice( currentItem, lastItem ).each( function() {
-				    nineline_horizontally_position_element( $( this ) );
-				    
-				    //nineline_show_entry( $( this ) );
-				});
-	
-				//currentItem = currentItem + itemsPerLoad;
-				//lastItem = lastItem + itemsPerLoad;
+				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem );
+				
+				if( entries.length ) {
+					$( entries ).each( function() {
+					    nineline_horizontally_position_element( $( this ) );
+					});
+				} else {
+					$( '.not-shown' ).addClass( 'not-processed' );
+				}
 			}
 		}
 		
 		function nineline_show_entry( element ) {
 			if( continueLayout ) {
-				$( element ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).animate({
+				$( element ).attr( 'data-page', page ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).addClass( 'processed' ).animate({
 					opacity: 1
 				}, 1000 );
 				
@@ -128,7 +156,6 @@
 		 */
 		function nineline_vertically_position_element( element, left, width ) {
 			if( continueLayout ) {
-				//var leftColumn = left + (negativeOffset/2);
 				/**
 				 * The starting column to put the value in. The negativeOffset is 
 				 * needed to account for the negative space some entries might 

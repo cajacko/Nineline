@@ -11,7 +11,7 @@
 	<section id="timeline">
 		<?php if ( have_posts() ) : ?>
 			<header id="timeline-header">
-				<h1 id="timeline-title">Timeline Title</h1>
+				<a href="" id="prev">Prev</a><a id="load-more" href=""><h1 id="timeline-title">Timeline Title</h1></a><a href="" id="next">next</a>
 			</header>
 			
 			<div id="timeline-loop">
