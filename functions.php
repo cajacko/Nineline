@@ -191,9 +191,25 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 	function nineline_the_entry_classes() {
 		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 		
+		$invention_extinction = get_post_meta( get_the_ID(), 'type', true );
+		
 		if( isset( $current_start_value ) && isset( $current_end_value ) && $current_start_value != $current_end_value ) {
 			echo ' entry_is_duration';
-		}	
+		}
+		
+		if( $invention_extinction != '' ) {
+			echo ' ' . $invention_extinction;
+		}
+	}
+	
+	function nineline_the_entry_title_classes() {
+		$rand = rand( 0, 10 );
+		
+		if( $rand < 2 ) {
+			echo ' big';
+		} elseif ( $rand < 6 ) {
+			echo ' medium';
+		}
 	}
 	
 	function nineline_echo_date_data( $date, $type) {

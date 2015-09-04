@@ -6358,11 +6358,18 @@ main {
   border-bottom: none;
   border-color: black;
 }
+.extinction a {
+  color: #525252;
+}
+.extinction a:hover {
+  color: #868686;
+}
 .entry {
   position: absolute;
   max-width: 200px;
   text-align: center;
   opacity: 0;
+  width: auto;
 }
 .entry .entry-wrap {
   padding: 10px;
@@ -6373,6 +6380,12 @@ main {
   padding: 0;
   position: relative;
   z-index: 2;
+}
+.entry .entry-wrap .entry-title.big {
+  font-size: 1.5em;
+}
+.entry .entry-wrap .entry-title.medium {
+  font-size: 1.25em;
 }
 .entry .entry-wrap .entry-markers {
   position: relative;

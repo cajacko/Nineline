@@ -275,7 +275,7 @@
 				 * Horizontally position the entry
 				 */
 				var left = Math.floor( middle - ( width / 2 ) );		
-				$( element ).css( "left", left );
+				$( element ).css( "left", left ).width( width );
 
 				if( $( element ).hasClass( 'entry' ) ) {
 					nineline_vertically_position_element( element, left, width )

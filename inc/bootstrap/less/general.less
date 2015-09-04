@@ -81,11 +81,26 @@ main {
 
 @entry-padding: 10px;
 
+.extinction {
+	a {
+		color: #525252;	
+	}	
+	
+	a:hover {
+		color: #868686;
+	}
+}
+
+.big {
+
+}
+
 .entry {
 	position: absolute;
 	max-width: @timeline-max-width;
 	text-align: center;
 	opacity: 0;
+	width: auto;
 	
 	.entry-wrap {
 		padding: @entry-padding;
@@ -97,6 +112,14 @@ main {
 			padding: 0;
 			position: relative;
 			z-index: 2;
+		}
+		
+		.entry-title.big {
+			font-size: 1.5em;
+		}
+		
+		.entry-title.medium {
+			font-size: 1.25em;
 		}
 		
 		.entry-markers {
