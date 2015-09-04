@@ -6380,7 +6380,7 @@ main {
 }
 .entry .entry-wrap .entry-markers .entry-line {
   position: absolute;
-  top: 0;
+  top: 5px;
   height: 2000px;
   border-width: 1px;
   border-top: none;

@@ -32,6 +32,9 @@
 		wholeWidth = $( "#timeline-loop" ).width();
 		timelineHeight = $( "#timeline-loop" ).height();
 		
+		delay = 0;
+		timeBetweenLayouts = 25;
+		
 		/**
 		 * Create a 2 dimensional array used to check what 
 		 * pixels an entry is taking up in the timeline.
@@ -56,6 +59,14 @@
     /* -----------------------------
 	SUPPORT FUNCTIONS
 	----------------------------- */
+		function nineline_layout_delay() {
+			setTimeout( function() { 
+				nineline_layout_entries(); 
+			}, delay );
+			
+			delay + timeBetweenLayouts;
+		}
+		
 		function nineline_layout_all_entries() {
 			if( continueLayout ) {
 				nineline_layout_entries();
@@ -93,9 +104,9 @@
 			if( continueLayout ) {
 				$( element ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).animate({
 					opacity: 1
-				}, 100, function() {
-					nineline_layout_entries();
-				});
+				}, 1000 );
+				
+				nineline_layout_delay();
 			}
 		}
 		
