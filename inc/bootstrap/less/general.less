@@ -1,0 +1,72 @@
+html, body, main, #timeline {
+	height: 100%;
+}
+
+main {
+	padding: 60px @global-padding;	
+}
+
+@timeline-header-height: 60px;
+@timeline-footer-height: 40px;
+@timeline-border: 1px solid #9C9C9C;
+
+#timeline {
+	display: inline-block;
+	width: 100%;
+	position: relative; // Make sure the footer goes to the bottom
+	
+	#timeline-header, #timeline-loop, #timeline-footer {
+		position: absolute;
+		width: 100%;	
+	}
+	
+	#timeline-header {
+		top: 0;
+		height: @timeline-header-height;
+		border-bottom: @timeline-border;
+		
+		#timeline-title {
+			margin: 0;
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			font-size: 1.5em;
+			text-align: center;
+		}
+	}
+	
+	#timeline-loop {
+		top: @timeline-header-height;
+		bottom: @timeline-footer-height;
+		
+		#timeline-wrapper {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: @timeline-max-width / 2;
+			right: @timeline-max-width / 2;
+		}
+	}
+	
+	#timeline-footer {
+		bottom: 0;
+		height: @timeline-footer-height;
+		border-top: @timeline-border;
+	}	
+}
+
+@entry-padding: 10px;
+
+.entry {
+	position: absolute;
+	max-width: @timeline-max-width;
+	text-align: center;
+	padding: @entry-padding;
+	margin: @entry-padding 0 ( @entry-padding * 2 ) 0;
+	
+	.entry-title {
+		font-size: 1em;
+		margin: 0;
+		padding: 0;
+	}
+}
