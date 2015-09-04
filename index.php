@@ -20,17 +20,19 @@
 					
 					<?php while ( have_posts() ) : the_post(); ?>
 			
-						<?php $entries[] = get_post(); ?>
+						<?php array_push( $entries, get_post() ); ?>
 				
 					<?php endwhile; ?>
 					
 					<?php shuffle( $entries ); ?>
 					
-					<?php foreach( $entries as $entry ): setup_postdata( $entry ); ?>
+					<?php foreach( $entries as $post ): setup_postdata( $post ); ?>
 						
 						<?php get_template_part( 'sections/entry' ); ?>
 					
 					<?php endforeach; ?>
+					
+					<?php wp_reset_postdata(); ?>
 	
 				</div>
 			</div>

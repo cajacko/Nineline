@@ -85,7 +85,9 @@ FILTER ENTRIES
 	    $query->set( 'posts_per_page', -1 );
 	}
 	
-	add_action( 'pre_get_posts', 'exclude_category' );
+	if( !is_admin() ) {
+		add_action( 'pre_get_posts', 'exclude_category' );
+	}
 
 /* -----------------------------
 DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
@@ -156,15 +158,12 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 	}
 	
 	function nineline_the_data( $type = 'entry' ) {
+		global $earliest_entry_date, $latest_entry_date, $current_start_date, $current_end_date;
 		
 		if( $type == 'entry' && isset( $current_start_date ) && isset( $current_end_date ) ) {
-			global $current_start_date, $current_end_date;
-			
 			$start_date = $current_start_date;
 			$end_date = $current_end_date;
 		} elseif( isset( $earliest_entry_date ) && isset( $latest_entry_date ) ) {
-			global $earliest_entry_date, $latest_entry_date;
-			
 			$start_date = $earliest_entry_date;
 			$end_date = $latest_entry_date;
 		} else {
@@ -197,8 +196,8 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 	}
 	
 	function nineline_test_positions( $max_left, $max_top ) {
-		$left = rand( 0, $max_left );
-		$top = rand( 0, $max_top );
+		$left = rand( -100, $max_left );
+		$top = rand( -100, $max_top );
 		
 		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
 	}
