@@ -2,8 +2,6 @@
 /**
  * The header for the Nineline theme.
  *
- * Displays all of the <head> section and everything up till <div id="main-wrap">
- *
  * @package Nineline
  */
 ?>
@@ -31,7 +29,9 @@
 	
 		<body>
 			<header id="site-header">
+				
 				<?php get_template_part( 'sections/site-navigation' ); ?>
+				
 			</header>	
 			
 			<main>

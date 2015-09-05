@@ -1,3 +1,11 @@
+<?php
+ /**
+  * Get's footer navigation/toolbar
+  *
+  * Uses the default Bootstrap Navbar
+  */
+?>
+
 <nav class="navbar navbar-default navbar-fixed-bottom">
 	<div class="container-fluid">
 		<form class="form-inline" method="get">   

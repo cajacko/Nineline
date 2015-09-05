@@ -35,12 +35,7 @@ ADD STYLES AND SCRIPTS
 		 */
 		wp_enqueue_style( 'nineline-bootstrap-style',  get_template_directory_uri()  . '/inc/bootstrap/css/bootstrap.min.css' );
 		wp_enqueue_script( 'nineline-bootstrap-script', get_template_directory_uri()  . '/inc/bootstrap/js/bootstrap.min.js', array( 'jquery' ) );
-		
-		/*
-		 * Add the template.js file which provides global functions used by other JavaScript files.
-		 */
-		wp_enqueue_script( 'nineline-template-script', get_template_directory_uri()  . '/js/template.js', array( 'jquery' ) );
-		
+
 		/*
 		 * Add the core setup.js file which is used on every page.
 		 */

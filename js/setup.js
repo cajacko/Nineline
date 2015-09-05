@@ -19,21 +19,30 @@
 	    /**
 		  * Set variables for the positioning functions to use
 		  */
-	    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' );
-		latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' );
-		range = latestDaysSince - earliestDaysSince;
+	    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' ); // Get the earliest entry
+		latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' ); // Get the latest entry
+		range = latestDaysSince - earliestDaysSince; // Get the range of the min and max entry in days
 		
 		timelineWrapperwidth = $( "#timeline-wrapper" ).width();
-		ratio = range / timelineWrapperwidth;
+		ratio = range / timelineWrapperwidth; // How many days does each pixel represent
 		
-		negativeOffset = $( "#timeline-wrapper" ).css( "left" ); 
+		/**
+		 * Get the negative offset. Used because each entry is placed 
+		 * horizontally with it's middle representing the date. If the 
+		 * entry is right at the beggining then the width of it would 
+		 * cause it to be cropped by the edge of the timeline container. 
+		 * This offset takes into account the maximum width of an entry 
+		 * and allows enough padding on either side so that these entries 
+		 * would still be visible.
+		 */
+		negativeOffset = $( "#timeline-wrapper" ).css( "left" );
 		negativeOffset = parseInt( negativeOffset );
 		
 		wholeWidth = $( "#timeline-loop" ).width();
 		timelineHeight = $( "#timeline-loop" ).height();
 		
-		delay = 0;
-		timeBetweenLayouts = 25;
+		delay = 0; // Set the initial delay until the first entry is loaded.
+		timeBetweenLayouts = 25; // How long to wait until the next post is displayed
 		
 		/**
 		 * Create a 2 dimensional array used to check what 
@@ -43,13 +52,12 @@
 		
 		tallest = 0; // Which row is the tallest. Used to se the height of the entry lines.
 		
-		currentItem = 0;
+		currentItem = 0; // The current entry that is being positioned
 		itemsPerLoad = 1;
 		lastItem = itemsPerLoad;
 		
 		page = 1;
-		
-		continueLayout = true;
+		continueLayout = true; // Used to stop laying out post, e.g. when resizing the window.
 			
 	    nineline_layout_all_entries();
     }
@@ -61,22 +69,36 @@
     /* -----------------------------
 	SUPPORT FUNCTIONS
 	----------------------------- */
+		/**
+		 * Registers the click events that show more or previous posts
+		 */
 		function nineline_load_more_entries() {
+			/**
+			 * Load more posts on click
+			 */
 			$( '#load-more' ).click( function() {
 				event.preventDefault();
 				
-				$( '.processed' ).hide();
-				page++;
+				$( '.processed' ).hide(); // Hide all the currently showed posts
+				page++; // Indicate that a seperate set of posts are being loaded
 				
-				table = create2DArray( wholeWidth + 1 );
+				table = create2DArray( wholeWidth + 1 ); // Reset the table so can layout posts again
 				
 				nineline_layout_entries();
 			});	
 			
+			/**
+			 * Load the last page of posts
+			 */
 			$( '#prev' ).click( function() {
 				event.preventDefault();
 				
-				$( '.entry' ).each( function() {
+				page--;
+				
+				/**
+				 * Find all the entries
+				 */
+				$( '[data-page="' + page + '"]' ).each( function() {
 					if( $( this ).attr( 'data-page' ) == ( page - 1 ) ) {
 						$( this ).show( 'slow' );
 					} else {
