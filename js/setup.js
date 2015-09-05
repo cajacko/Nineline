@@ -130,8 +130,13 @@
 	
 		function nineline_layout_entries() {
 			if( continueLayout ) {
-				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem ); // Get the entires not yet processed
-
+				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem ); // Get the next entry which isn't processed yet
+				
+				/**
+				 * If there is an entry to process then position it. 
+				 * Otherwise mark which entries haven't been positioned 
+				 * yet.
+				 */
 				if( entries.length ) {
 					$( entries ).each( function() {
 					    nineline_horizontally_position_element( $( this ) );
@@ -142,17 +147,24 @@
 			}
 		}
 		
+		/**
+		 * Animate the entry to become visible and then 
+		 * move onto the next entry
+		 */
 		function nineline_show_entry( element ) {
 			if( continueLayout ) {
 				$( element ).attr( 'data-page', page ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).addClass( 'processed' ).animate({
 					opacity: 1
 				}, 1000 );
 				
+				/**
+				 * Animate the element to become visible after a specific time. 
+				 */
 				setTimeout( function() { 
 					nineline_layout_entries(); 
 				}, delay );
 				
-				delay + timeBetweenLayouts;
+				delay + timeBetweenLayouts; // Increment the delay time
 			}
 		}
 		
@@ -269,6 +281,13 @@
 					
 				}
 				
+				/**
+				 * If the entry has a position to fit into then 
+				 * position it and show it.
+				 *
+				 * Otherwise, make sure it is marrked as not processed 
+				 * and then move onto the next element.
+				 */
 				if( showEntry ) {	
 					/**
 					 * Indicate where the current element is in the 
