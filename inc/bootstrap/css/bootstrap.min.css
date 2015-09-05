@@ -6294,6 +6294,10 @@ main,
 #timeline {
   height: 100%;
 }
+#site-header .navbar a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 main {
   padding: 60px 20px;
 }
@@ -6301,6 +6305,7 @@ main {
   display: inline-block;
   width: 100%;
   position: relative;
+  background-color: white;
 }
 #timeline #timeline-header,
 #timeline #timeline-loop,
@@ -6360,6 +6365,7 @@ main {
 }
 .extinction a {
   color: #525252;
+  text-decoration: line-through;
 }
 .extinction a:hover {
   color: #868686;
