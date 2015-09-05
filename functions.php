@@ -282,6 +282,22 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 5 );
 		} elseif( $range_years >= 3) {
 			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 1 );
+		} elseif ( $range_months >= 25 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 5 );
+		} elseif ( $range_months >= 15 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 3 );
+		} elseif ( $range_months >= 12 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 2 );
+		} elseif ( $range_months >= 3 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 1 );
+		} elseif ( $range_days >= 50 ) {
+			// Every 10 days
+		} elseif ( $range_days >= 21 ) {
+			// Every 7 days
+		} elseif ( $range_days >= 5 ) {
+			// Every 3 days
+		} else {
+			// every day
 		}
 		
 		$count = 1;
@@ -296,9 +312,52 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		}	
 	}
 	
+	function nineline_month_labels( $start_year, $start_month, $end_year, $end_month, $demonination ) {
+		$month_array = array();
+		$month = intval( $start_month );
+		$end_month = intval( $end_month );
+		$continue = true;
+		$year = $start_year;
+		
+		while( $continue ) {
+			if( $month > 12 ) {
+				$month = 1;
+				$year++;
+			}
+			
+			if( $month < 10 ) {
+				$month_string = '0' . $month;
+			} else {
+				$month_string = $month;
+			}
+			
+			$month_array[] = array( 
+				'title' => $month_string . '/' . $year,
+				'date' => $year . '-' . $month_string . '-01',
+			);
+			
+			if( $year == $end_year && $month == $end_month ) {
+				$continue = false;
+			}
+			
+			$month++;
+		}
+		
+		foreach( $month_array as $key => $value ) {
+			if( ($key + 1) % $demonination == 0 ) {
+				$label_array[] = array (
+					'title' => $value['title'],
+					'date' => $value['date'],
+				);
+			}
+		}
+		
+		return $label_array;
+	}
+	
 	function nineline_year_labels( $start_year, $end_year, $demonination ) {
 		for( $i = $start_year; $i <= $end_year; $i++ ) {
-			if($i % $demonination == 0) {
+			if( $i % $demonination == 0 ) {
 				$label_array[] = array (
 					'title' => $i,
 					'date' => $i . '-01-01',
