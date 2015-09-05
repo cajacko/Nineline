@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Nineline <small>Tracking trends, predictions and events</small></a>
+			<a class="navbar-brand" href="<?php echo home_url(); ?>">Nineline <small>Tracking trends, predictions and events</small></a>
 			
 		</div>
 		

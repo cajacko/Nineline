@@ -274,15 +274,14 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		$range_months = $range_days / 12;
 		$label_array = array();
 		
-		if( $range_years > 100 ) {
-			for( $i = $start_date_data['year']; $i <= $end_date_data['year']; $i++ ) {
-				if($i % 20 == 0) {
-					$label_array[] = array (
-						'title' => $i,
-						'date' => $i . '-01-01',
-					);
-				}
-			}
+		if( $range_years >= 100 ) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 20 );
+		} elseif( $range_years >= 50) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 10 );
+		} elseif( $range_years >= 20) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 5 );
+		} elseif( $range_years >= 3) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 1 );
 		}
 		
 		$count = 1;
@@ -290,11 +289,24 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		
 		foreach( $label_array as $label ) {
 			$classes = nineline_label_display_rules( $length, $count );
-			
+
 			nineline_echo_date_label( $label['date'], $label['title'], $classes );
 			
 			$count++;
 		}	
+	}
+	
+	function nineline_year_labels( $start_year, $end_year, $demonination ) {
+		for( $i = $start_year; $i <= $end_year; $i++ ) {
+			if($i % $demonination == 0) {
+				$label_array[] = array (
+					'title' => $i,
+					'date' => $i . '-01-01',
+				);
+			}
+		}
+		
+		return $label_array;
 	}
 	
 	function nineline_label_display_rules( $length, $count ) {
@@ -319,6 +331,6 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		if( isset( $array[$count] ) ) {
 			return $array[$count];
 		} else {
-			return false;
+			return '';
 		}
 	}
