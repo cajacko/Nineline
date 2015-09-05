@@ -6307,6 +6307,18 @@ main,
   color: #F1F1F1;
   font-weight: 300;
 }
+#site-footer .nav {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+#site-footer .nav #filter {
+  float: none;
+}
+#site-footer .nav select {
+  height: 38px;
+}
 main {
   padding: 60px 20px;
 }
