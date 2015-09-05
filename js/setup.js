@@ -59,7 +59,7 @@
 		page = 1;
 		continueLayout = true; // Used to stop laying out post, e.g. when resizing the window.
 			
-	    nineline_layout_all_entries();
+	    nineline_layout_all_timeline_elements();
     }
 	
     function onPageLoadOrResize () {
@@ -96,10 +96,10 @@
 				page--;
 				
 				/**
-				 * Find all the entries
+				 * Find all the entries and hide/show the relevant ones
 				 */
-				$( '[data-page="' + page + '"]' ).each( function() {
-					if( $( this ).attr( 'data-page' ) == ( page - 1 ) ) {
+				$( '.entry' ).each( function() {
+					if( $( this ).attr( 'data-page' ) == ( page ) ) {
 						$( this ).show( 'slow' );
 					} else {
 						$( this ).hide( 'slow' );
@@ -107,16 +107,8 @@
 				});
 			});
 		}
-	
-		function nineline_layout_delay() {
-			setTimeout( function() { 
-				nineline_layout_entries(); 
-			}, delay );
-			
-			delay + timeBetweenLayouts;
-		}
 		
-		function nineline_layout_all_entries() {
+		function nineline_layout_all_timeline_elements() {
 			if( continueLayout ) {
 				nineline_layout_entries();
 		    
@@ -138,8 +130,8 @@
 	
 		function nineline_layout_entries() {
 			if( continueLayout ) {
-				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem );
-				
+				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem ); // Get the entires not yet processed
+
 				if( entries.length ) {
 					$( entries ).each( function() {
 					    nineline_horizontally_position_element( $( this ) );
@@ -156,7 +148,11 @@
 					opacity: 1
 				}, 1000 );
 				
-				nineline_layout_delay();
+				setTimeout( function() { 
+					nineline_layout_entries(); 
+				}, delay );
+				
+				delay + timeBetweenLayouts;
 			}
 		}
 		
