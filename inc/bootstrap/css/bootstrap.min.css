@@ -6362,6 +6362,9 @@ main {
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
   position: absolute;
 }
+#timeline #timeline-footer #timeline-footer-wrapper .date-label-title {
+  font-size: 1.5em;
+}
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
   height: 10px;
   border-width: 5px;
