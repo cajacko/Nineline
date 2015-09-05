@@ -83,6 +83,32 @@ FILTER ENTRIES
 	function exclude_category( $query ) {
 	    $query->set( 'post_type', 'entry' );
 	    $query->set( 'posts_per_page', -1 );
+	    
+		$meta_query = array();
+		
+		if( ( $_GET['start_year'] && !isset( $_GET['end_year'] ) || ( $_GET['start_year'] <= $_GET['end_year'] && isset( $_GET['start_year'] ) && isset( $_GET['end_year'] ) ) ) ) {
+			$start_date = ( $_GET['start_year'] * 10000 ) + 0101;
+			
+			$meta_query[] = array(
+				'key'     => 'start_date_value',
+				'value'   => $start_date,
+				'compare' => '>',
+			);
+		}
+	
+		if( ( $_GET['end_year'] && !isset( $_GET['start_year'] ) || ( $_GET['start_year'] <= $_GET['end_year'] && isset( $_GET['start_year'] ) && isset( $_GET['end_year'] ) ) ) ) {
+			$end_date = ( $_GET['end_year'] * 10000 ) + 0101;
+			
+			$meta_query[] = array(
+				'key'     => 'start_date_value',
+				'value'   => $end_date,
+				'compare' => '<'
+			);
+		}
+		
+		if( !empty( $meta_query ) ) {
+			$query->set('meta_query', $meta_query);
+		}
 	}
 	
 	if( !is_admin() ) {
