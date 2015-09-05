@@ -35,12 +35,7 @@ ADD STYLES AND SCRIPTS
 		 */
 		wp_enqueue_style( 'nineline-bootstrap-style',  get_template_directory_uri()  . '/inc/bootstrap/css/bootstrap.min.css' );
 		wp_enqueue_script( 'nineline-bootstrap-script', get_template_directory_uri()  . '/inc/bootstrap/js/bootstrap.min.js', array( 'jquery' ) );
-		
-		/*
-		 * Add the template.js file which provides global functions used by other JavaScript files.
-		 */
-		wp_enqueue_script( 'nineline-template-script', get_template_directory_uri()  . '/js/template.js', array( 'jquery' ) );
-		
+
 		/*
 		 * Add the core setup.js file which is used on every page.
 		 */
@@ -80,10 +75,19 @@ REGISTER TIMELINE ENTRIES
 /* -----------------------------
 FILTER ENTRIES
 ----------------------------- */
-	function exclude_category( $query ) {
+	/**
+	 * - Make sure only timeline entries are queried
+	 * - Get all entries in the query
+	 * - If a start or end date is set in the url query 
+	 *   then get the relevant entries
+	 */
+	function nineline_filter_entries( $query ) {
 	    $query->set( 'post_type', 'entry' );
 	    $query->set( 'posts_per_page', -1 );
 	    
+	    /**
+		 * Get the date range if applicable
+		 */
 		$meta_query = array();
 		
 		if( ( $_GET['start_year'] && !isset( $_GET['end_year'] ) || ( $_GET['start_year'] <= $_GET['end_year'] && isset( $_GET['start_year'] ) && isset( $_GET['end_year'] ) ) ) ) {
@@ -112,7 +116,7 @@ FILTER ENTRIES
 	}
 	
 	if( !is_admin() ) {
-		add_action( 'pre_get_posts', 'exclude_category' );
+		add_action( 'pre_get_posts', 'nineline_filter_entries' );
 	}
 
 /* -----------------------------
@@ -120,7 +124,7 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 ----------------------------- */	
 	global $earliest_entry_date, $earliest_entry_value, $latest_entry_date, $latest_entry_value;
 	global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
-	
+		
 	function nineline_update_globals() {
 		global $earliest_entry_date, $earliest_entry_value, $latest_entry_date, $latest_entry_value;
 		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
@@ -182,7 +186,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			return false;
 		}
 	}
-	
+
+/* -----------------------------
+ECHO THE DATE DATA OF THE ELEMENT
+----------------------------- */	
 	function nineline_the_data( $type = 'entry' ) {
 		global $earliest_entry_date, $latest_entry_date, $current_start_date, $current_end_date;
 		
@@ -199,7 +206,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		nineline_echo_date_data( $start_date, 'start' );
 		nineline_echo_date_data( $end_date, 'end' );
 	}
-	
+
+/* -----------------------------
+RETURN THE BROKEN DOWN DATE INFO
+----------------------------- */	
 	function nineline_date_data( $date ) {
 		$date_array = explode("-", $date);	
 		$days_since = $date_array[2] + ( 31 * ( $date_array[1] + ( 12 * $date_array[0] ) ) );
@@ -213,7 +223,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		
 		return $array;
 	}
-	
+
+/* -----------------------------
+ECHO THE CLASSES FOR AN ENTRY
+----------------------------- */	
 	function nineline_the_entry_classes() {
 		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 		
@@ -227,7 +240,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			echo ' ' . $invention_extinction;
 		}
 	}
-	
+
+/* -----------------------------
+ECHO THE CLASSES FOR AN ENTRY TITLE
+----------------------------- */	
 	function nineline_the_entry_title_classes() {
 		$rand = rand( 0, 10 );
 		
@@ -237,7 +253,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			echo ' medium';
 		}
 	}
-	
+
+/* -----------------------------
+ECHO THE DATA FROM A DATE
+----------------------------- */
 	function nineline_echo_date_data( $date, $type) {
 		$date_vars = nineline_date_data( $date );
 		
@@ -246,14 +265,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		echo ' data-'. $type .'-day="' . $date_vars['day'] . '"';
 		echo ' data-'. $type .'-days-since="' . $date_vars['days_since'] . '"';
 	}
-	
-	function nineline_test_positions( $max_left, $max_top ) {
-		$left = rand( -100, $max_left );
-		$top = rand( -100, $max_top );
-		
-		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
-	}
-	
+
+/* -----------------------------
+ECHO THE DATE LABEL
+----------------------------- */	
 	function nineline_echo_date_label( $date, $title, $classes ) {
 		$days_since = nineline_date_data( $date );
 		echo '<div class="date-label ' . $classes .'">';
@@ -262,7 +277,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		echo '</span>';
 		echo '<div class="date-label-mark timeline-line" data-start-days-since="' . $days_since['days_since'] . '" data-end-days-since="' . $days_since['days_since'] . '"></div></div>';
 	}
-	
+
+/* -----------------------------
+ADD THE DATE LABELS
+----------------------------- */	
 	function nineline_timeline_scale() {
 		global $earliest_entry_date, $latest_entry_date;
 		
@@ -311,7 +329,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 			$count++;
 		}	
 	}
-	
+
+/* -----------------------------
+GET MONTH LABELS
+----------------------------- */	
 	function nineline_month_labels( $start_year, $start_month, $end_year, $end_month, $demonination ) {
 		$month_array = array();
 		$month = intval( $start_month );
@@ -354,7 +375,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		
 		return $label_array;
 	}
-	
+
+/* -----------------------------
+GET YEAR LABELS
+----------------------------- */	
 	function nineline_year_labels( $start_year, $end_year, $demonination ) {
 		for( $i = $start_year; $i <= $end_year; $i++ ) {
 			if( $i % $demonination == 0 ) {
@@ -367,7 +391,10 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		
 		return $label_array;
 	}
-	
+
+/* -----------------------------
+RETURN THE LABEL CLASS
+----------------------------- */	
 	function nineline_label_display_rules( $length, $count ) {
 		$length_1 = array(
 			'1' => '',	

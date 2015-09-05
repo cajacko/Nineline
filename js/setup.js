@@ -19,21 +19,30 @@
 	    /**
 		  * Set variables for the positioning functions to use
 		  */
-	    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' );
-		latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' );
-		range = latestDaysSince - earliestDaysSince;
+	    earliestDaysSince = $( '#timeline-footer' ).data( 'start-days-since' ); // Get the earliest entry
+		latestDaysSince = $( '#timeline-footer' ).data( 'end-days-since' ); // Get the latest entry
+		range = latestDaysSince - earliestDaysSince; // Get the range of the min and max entry in days
 		
 		timelineWrapperwidth = $( "#timeline-wrapper" ).width();
-		ratio = range / timelineWrapperwidth;
+		ratio = range / timelineWrapperwidth; // How many days does each pixel represent
 		
-		negativeOffset = $( "#timeline-wrapper" ).css( "left" ); 
+		/**
+		 * Get the negative offset. Used because each entry is placed 
+		 * horizontally with it's middle representing the date. If the 
+		 * entry is right at the beggining then the width of it would 
+		 * cause it to be cropped by the edge of the timeline container. 
+		 * This offset takes into account the maximum width of an entry 
+		 * and allows enough padding on either side so that these entries 
+		 * would still be visible.
+		 */
+		negativeOffset = $( "#timeline-wrapper" ).css( "left" );
 		negativeOffset = parseInt( negativeOffset );
 		
 		wholeWidth = $( "#timeline-loop" ).width();
 		timelineHeight = $( "#timeline-loop" ).height();
 		
-		delay = 0;
-		timeBetweenLayouts = 25;
+		delay = 0; // Set the initial delay until the first entry is loaded.
+		timeBetweenLayouts = 25; // How long to wait until the next post is displayed
 		
 		/**
 		 * Create a 2 dimensional array used to check what 
@@ -41,17 +50,14 @@
 		 */
 		table = create2DArray( wholeWidth + 1 );
 		
-		tallest = 0; // Which row is the tallest. Used to se the height of the entry lines.
-		
-		currentItem = 0;
+		currentItem = 0; // The current entry that is being positioned
 		itemsPerLoad = 1;
 		lastItem = itemsPerLoad;
 		
 		page = 1;
-		
-		continueLayout = true;
+		continueLayout = true; // Used to stop laying out post, e.g. when resizing the window.
 			
-	    nineline_layout_all_entries();
+	    nineline_layout_all_timeline_elements();
     }
 	
     function onPageLoadOrResize () {
@@ -61,23 +67,37 @@
     /* -----------------------------
 	SUPPORT FUNCTIONS
 	----------------------------- */
+		/**
+		 * Registers the click events that show more or previous posts
+		 */
 		function nineline_load_more_entries() {
+			/**
+			 * Load more posts on click
+			 */
 			$( '#load-more' ).click( function() {
 				event.preventDefault();
 				
-				$( '.processed' ).hide();
-				page++;
+				$( '.processed' ).hide(); // Hide all the currently showed posts
+				page++; // Indicate that a seperate set of posts are being loaded
 				
-				table = create2DArray( wholeWidth + 1 );
+				table = create2DArray( wholeWidth + 1 ); // Reset the table so can layout posts again
 				
 				nineline_layout_entries();
 			});	
 			
+			/**
+			 * Load the last page of posts
+			 */
 			$( '#prev' ).click( function() {
 				event.preventDefault();
 				
+				page--;
+				
+				/**
+				 * Find all the entries and hide/show the relevant ones
+				 */
 				$( '.entry' ).each( function() {
-					if( $( this ).attr( 'data-page' ) == ( page - 1 ) ) {
+					if( $( this ).attr( 'data-page' ) == ( page ) ) {
 						$( this ).show( 'slow' );
 					} else {
 						$( this ).hide( 'slow' );
@@ -85,16 +105,8 @@
 				});
 			});
 		}
-	
-		function nineline_layout_delay() {
-			setTimeout( function() { 
-				nineline_layout_entries(); 
-			}, delay );
-			
-			delay + timeBetweenLayouts;
-		}
 		
-		function nineline_layout_all_entries() {
+		function nineline_layout_all_timeline_elements() {
 			if( continueLayout ) {
 				nineline_layout_entries();
 		    
@@ -116,8 +128,13 @@
 	
 		function nineline_layout_entries() {
 			if( continueLayout ) {
-				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem );
+				var entries = $( '.entry.not-processed' ).slice( currentItem, lastItem ); // Get the next entry which isn't processed yet
 				
+				/**
+				 * If there is an entry to process then position it. 
+				 * Otherwise mark which entries haven't been positioned 
+				 * yet.
+				 */
 				if( entries.length ) {
 					$( entries ).each( function() {
 					    nineline_horizontally_position_element( $( this ) );
@@ -128,13 +145,24 @@
 			}
 		}
 		
+		/**
+		 * Animate the entry to become visible and then 
+		 * move onto the next entry
+		 */
 		function nineline_show_entry( element ) {
 			if( continueLayout ) {
 				$( element ).attr( 'data-page', page ).removeClass( 'not-shown' ).removeClass( 'not-processed' ).addClass( 'processed' ).animate({
 					opacity: 1
 				}, 1000 );
 				
-				nineline_layout_delay();
+				/**
+				 * Animate the element to become visible after a specific time. 
+				 */
+				setTimeout( function() { 
+					nineline_layout_entries(); 
+				}, delay );
+				
+				delay + timeBetweenLayouts; // Increment the delay time
 			}
 		}
 		
@@ -251,6 +279,13 @@
 					
 				}
 				
+				/**
+				 * If the entry has a position to fit into then 
+				 * position it and show it.
+				 *
+				 * Otherwise, make sure it is marrked as not processed 
+				 * and then move onto the next element.
+				 */
 				if( showEntry ) {	
 					/**
 					 * Indicate where the current element is in the 
@@ -263,14 +298,8 @@
 						}
 					}
 					
-					if(tallest < row) {
-						tallest = row;
-					}
-					
-					$( element ).css( "top", startRow );
-					//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
-					//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
-					
+					$( element ).css( "top", startRow ); // Set the top of the element
+
 					nineline_show_entry( element );
 				} else {
 					$( element ).removeClass( 'not-processed' );
@@ -281,11 +310,15 @@
 	
 		function nineline_horizontally_position_element( element ) {
 			if( continueLayout ) {
-				var entryStartDaysSince = $( element ).attr( "data-start-days-since" );
-				var entryEndDaysSince = $( element ).attr( "data-end-days-since" );
+				var entryStartDaysSince = $( element ).attr( "data-start-days-since" ); // Get the start date
+				var entryEndDaysSince = $( element ).attr( "data-end-days-since" ); // Get the end date
 				
-				var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio;
+				var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio; // Get the middle position of the element
 				
+				/**
+				 * Process the element depending on whether 
+				 * it's a line or an entry 
+				 */
 				if( $( element ).hasClass( 'timeline-line' ) ) {
 					var width = $( element ).css( 'border-width' );
 					width = parseInt( width );
@@ -303,7 +336,11 @@
 				 */
 				var left = Math.floor( middle - ( width / 2 ) );		
 				$( element ).css( "left", left ).width( width );
-
+				
+				/**
+				 * If the element is a timeline entry then vertically 
+				 * position it as well
+				 */
 				if( $( element ).hasClass( 'entry' ) ) {
 					nineline_vertically_position_element( element, left, width )
 				}

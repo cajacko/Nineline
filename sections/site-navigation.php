@@ -1,3 +1,11 @@
+<?php
+ /**
+  * Display the site navigation
+  *
+  * Uses the default Bootstrap Navbar
+  */
+?>
+
 <nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
