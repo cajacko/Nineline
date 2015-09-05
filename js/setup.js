@@ -50,8 +50,6 @@
 		 */
 		table = create2DArray( wholeWidth + 1 );
 		
-		tallest = 0; // Which row is the tallest. Used to se the height of the entry lines.
-		
 		currentItem = 0; // The current entry that is being positioned
 		itemsPerLoad = 1;
 		lastItem = itemsPerLoad;
@@ -300,14 +298,8 @@
 						}
 					}
 					
-					if(tallest < row) {
-						tallest = row;
-					}
-					
-					$( element ).css( "top", startRow );
-					//$(this).siblings(".timeline-article-marker").css("top", startRow + height );
-					//$(this).siblings(".timeline-article-marker-horizontal").css("top", startRow + height - 1);
-					
+					$( element ).css( "top", startRow ); // Set the top of the element
+
 					nineline_show_entry( element );
 				} else {
 					$( element ).removeClass( 'not-processed' );
@@ -318,11 +310,15 @@
 	
 		function nineline_horizontally_position_element( element ) {
 			if( continueLayout ) {
-				var entryStartDaysSince = $( element ).attr( "data-start-days-since" );
-				var entryEndDaysSince = $( element ).attr( "data-end-days-since" );
+				var entryStartDaysSince = $( element ).attr( "data-start-days-since" ); // Get the start date
+				var entryEndDaysSince = $( element ).attr( "data-end-days-since" ); // Get the end date
 				
-				var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio;
+				var middle = ( entryStartDaysSince - earliestDaysSince ) / ratio; // Get the middle position of the element
 				
+				/**
+				 * Process the element depending on whether 
+				 * it's a line or an entry 
+				 */
 				if( $( element ).hasClass( 'timeline-line' ) ) {
 					var width = $( element ).css( 'border-width' );
 					width = parseInt( width );
@@ -340,7 +336,11 @@
 				 */
 				var left = Math.floor( middle - ( width / 2 ) );		
 				$( element ).css( "left", left ).width( width );
-
+				
+				/**
+				 * If the element is a timeline entry then vertically 
+				 * position it as well
+				 */
 				if( $( element ).hasClass( 'entry' ) ) {
 					nineline_vertically_position_element( element, left, width )
 				}
