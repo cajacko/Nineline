@@ -29,5 +29,9 @@
 			
 		</head>
 	
-		<body>			
+		<body>
+			<header id="site-header">
+				<?php get_template_part( 'sections/site-navigation' ); ?>
+			</header>	
+			
 			<main>

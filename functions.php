@@ -83,6 +83,32 @@ FILTER ENTRIES
 	function exclude_category( $query ) {
 	    $query->set( 'post_type', 'entry' );
 	    $query->set( 'posts_per_page', -1 );
+	    
+		$meta_query = array();
+		
+		if( ( $_GET['start_year'] && !isset( $_GET['end_year'] ) || ( $_GET['start_year'] <= $_GET['end_year'] && isset( $_GET['start_year'] ) && isset( $_GET['end_year'] ) ) ) ) {
+			$start_date = ( $_GET['start_year'] * 10000 ) + 0101;
+			
+			$meta_query[] = array(
+				'key'     => 'start_date_value',
+				'value'   => $start_date,
+				'compare' => '>',
+			);
+		}
+	
+		if( ( $_GET['end_year'] && !isset( $_GET['start_year'] ) || ( $_GET['start_year'] <= $_GET['end_year'] && isset( $_GET['start_year'] ) && isset( $_GET['end_year'] ) ) ) ) {
+			$end_date = ( $_GET['end_year'] * 10000 ) + 0101;
+			
+			$meta_query[] = array(
+				'key'     => 'start_date_value',
+				'value'   => $end_date,
+				'compare' => '<'
+			);
+		}
+		
+		if( !empty( $meta_query ) ) {
+			$query->set('meta_query', $meta_query);
+		}
 	}
 	
 	if( !is_admin() ) {
@@ -191,9 +217,25 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 	function nineline_the_entry_classes() {
 		global $current_start_date, $current_start_value, $current_end_date, $current_end_value;
 		
+		$invention_extinction = get_post_meta( get_the_ID(), 'type', true );
+		
 		if( isset( $current_start_value ) && isset( $current_end_value ) && $current_start_value != $current_end_value ) {
 			echo ' entry_is_duration';
-		}	
+		}
+		
+		if( $invention_extinction != '' ) {
+			echo ' ' . $invention_extinction;
+		}
+	}
+	
+	function nineline_the_entry_title_classes() {
+		$rand = rand( 0, 10 );
+		
+		if( $rand < 2 ) {
+			echo ' big';
+		} elseif ( $rand < 6 ) {
+			echo ' medium';
+		}
 	}
 	
 	function nineline_echo_date_data( $date, $type) {
@@ -212,9 +254,9 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
 	}
 	
-	function nineline_echo_date_label( $date, $title ) {
+	function nineline_echo_date_label( $date, $title, $classes ) {
 		$days_since = nineline_date_data( $date );
-		echo '<div class="date-label">';
+		echo '<div class="date-label ' . $classes .'">';
 		echo '<span class="date-label-title" data-start-days-since="' . $days_since['days_since'] . '" data-end-days-since="' . $days_since['days_since'] . '">';
 		echo $title; 
 		echo '</span>';
@@ -230,14 +272,124 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		$range_days = $end_date_data['days_since'] - $start_date_data['days_since'];
 		$range_years = $range_days / 365;
 		$range_months = $range_days / 12;
+		$label_array = array();
 		
-		if( $range_years > 100 ) {
-			for( $i = $start_date_data['year']; $i <= $end_date_data['year']; $i++ ) {
-				if($i % 20 == 0) {
-					nineline_echo_date_label( $i . '-01-01', $i );
-				}
+		if( $range_years >= 100 ) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 20 );
+		} elseif( $range_years >= 50) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 10 );
+		} elseif( $range_years >= 20) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 5 );
+		} elseif( $range_years >= 3) {
+			$label_array = nineline_year_labels( $start_date_data['year'], $end_date_data['year'], 1 );
+		} elseif ( $range_months >= 25 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 5 );
+		} elseif ( $range_months >= 15 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 3 );
+		} elseif ( $range_months >= 12 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 2 );
+		} elseif ( $range_months >= 3 ) {
+			$label_array =  nineline_month_labels( $start_date_data['year'], $start_date_data['month'], $end_date_data['year'], $end_date_data['month'], 1 );
+		} elseif ( $range_days >= 50 ) {
+			// Every 10 days
+		} elseif ( $range_days >= 21 ) {
+			// Every 7 days
+		} elseif ( $range_days >= 5 ) {
+			// Every 3 days
+		} else {
+			// every day
+		}
+		
+		$count = 1;
+		$length = count( $label_array );	
+		
+		foreach( $label_array as $label ) {
+			$classes = nineline_label_display_rules( $length, $count );
+
+			nineline_echo_date_label( $label['date'], $label['title'], $classes );
+			
+			$count++;
+		}	
+	}
+	
+	function nineline_month_labels( $start_year, $start_month, $end_year, $end_month, $demonination ) {
+		$month_array = array();
+		$month = intval( $start_month );
+		$end_month = intval( $end_month );
+		$continue = true;
+		$year = $start_year;
+		
+		while( $continue ) {
+			if( $month > 12 ) {
+				$month = 1;
+				$year++;
+			}
+			
+			if( $month < 10 ) {
+				$month_string = '0' . $month;
+			} else {
+				$month_string = $month;
+			}
+			
+			$month_array[] = array( 
+				'title' => $month_string . '/' . $year,
+				'date' => $year . '-' . $month_string . '-01',
+			);
+			
+			if( $year == $end_year && $month == $end_month ) {
+				$continue = false;
+			}
+			
+			$month++;
+		}
+		
+		foreach( $month_array as $key => $value ) {
+			if( ($key + 1) % $demonination == 0 ) {
+				$label_array[] = array (
+					'title' => $value['title'],
+					'date' => $value['date'],
+				);
 			}
 		}
 		
+		return $label_array;
+	}
+	
+	function nineline_year_labels( $start_year, $end_year, $demonination ) {
+		for( $i = $start_year; $i <= $end_year; $i++ ) {
+			if( $i % $demonination == 0 ) {
+				$label_array[] = array (
+					'title' => $i,
+					'date' => $i . '-01-01',
+				);
+			}
+		}
 		
+		return $label_array;
+	}
+	
+	function nineline_label_display_rules( $length, $count ) {
+		$length_1 = array(
+			'1' => '',	
+		);
+		
+		$length_8 = array(
+			1 => '',
+			2 => 'extra-small-hide mobile-hide medium-hide',
+			3 => 'extra-small-hide',
+			4 => 'extra-small-hide mobile-hide medium-hide',
+			5 => 'extra-small-hide mobile-hide medium-hide',
+			6 => 'extra-small-hide',
+			7 => 'extra-small-hide mobile-hide medium-hide',
+			8 => '',	
+		);
+		
+		$var_string = 'length_' . $length;		
+		$array = $$var_string;
+		
+		if( isset( $array[$count] ) ) {
+			return $array[$count];
+		} else {
+			return '';
+		}
 	}

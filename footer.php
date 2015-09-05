@@ -6,7 +6,13 @@
  */
 ?>	
 		</main>
+		
+		<footer id="site-footer">
 			
+			<?php get_template_part( 'sections/toolbar' ); ?>
+			
+		</footer>
+
 		<?php wp_footer(); ?>
 	
 	</body>
