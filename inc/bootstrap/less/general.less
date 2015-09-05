@@ -139,6 +139,24 @@ main {
 				right: @timeline-max-width-mobile / 2;
 			}
 			
+			@media (max-width: @extra-small-width ) {
+				.extra-small-hide {
+					display: none;
+				}
+			}
+			
+			@media (max-width: @mobile-width ) {
+				.mobile-hide {
+					display: none;
+				}
+			}
+			
+			@media (max-width: @medium-width ) {
+				.medium-hide {
+					display: none;
+				}
+			}
+			
 			.date-label-title, .date-label-mark {
 				position: absolute;
 			}
@@ -199,7 +217,10 @@ main {
 	
 	.entry-wrap {
 		padding: @entry-padding;
-		//margin: @entry-padding 0 ( @entry-padding * 2 ) 0;
+		
+		@media (max-width: @mobile-width ) {
+			padding: 7px;
+		}
 	
 		.entry-title {
 			font-size: 1em;

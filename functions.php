@@ -228,9 +228,9 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		echo ' style="left: ' . $left . 'px; top: ' . $top . 'px;"';	
 	}
 	
-	function nineline_echo_date_label( $date, $title ) {
+	function nineline_echo_date_label( $date, $title, $classes ) {
 		$days_since = nineline_date_data( $date );
-		echo '<div class="date-label">';
+		echo '<div class="date-label ' . $classes .'">';
 		echo '<span class="date-label-title" data-start-days-since="' . $days_since['days_since'] . '" data-end-days-since="' . $days_since['days_since'] . '">';
 		echo $title; 
 		echo '</span>';
@@ -246,14 +246,53 @@ DEFINE GLOBAL VARS AND GLOBAL FUNCTIONS
 		$range_days = $end_date_data['days_since'] - $start_date_data['days_since'];
 		$range_years = $range_days / 365;
 		$range_months = $range_days / 12;
+		$label_array = array();
 		
 		if( $range_years > 100 ) {
 			for( $i = $start_date_data['year']; $i <= $end_date_data['year']; $i++ ) {
 				if($i % 20 == 0) {
-					nineline_echo_date_label( $i . '-01-01', $i );
+					$label_array[] = array (
+						'title' => $i,
+						'date' => $i . '-01-01',
+					);
 				}
 			}
 		}
 		
+		$count = 1;
+		$length = count( $label_array );	
 		
+		foreach( $label_array as $label ) {
+			$classes = nineline_label_display_rules( $length, $count );
+			
+			nineline_echo_date_label( $label['date'], $label['title'], $classes );
+			
+			$count++;
+		}	
+	}
+	
+	function nineline_label_display_rules( $length, $count ) {
+		$length_1 = array(
+			'1' => '',	
+		);
+		
+		$length_8 = array(
+			1 => '',
+			2 => 'extra-small-hide mobile-hide medium-hide',
+			3 => 'extra-small-hide',
+			4 => 'extra-small-hide mobile-hide medium-hide',
+			5 => 'extra-small-hide mobile-hide medium-hide',
+			6 => 'extra-small-hide',
+			7 => 'extra-small-hide mobile-hide medium-hide',
+			8 => '',	
+		);
+		
+		$var_string = 'length_' . $length;		
+		$array = $$var_string;
+		
+		if( isset( $array[$count] ) ) {
+			return $array[$count];
+		} else {
+			return false;
+		}
 	}

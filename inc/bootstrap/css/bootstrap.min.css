@@ -6398,6 +6398,21 @@ main {
     right: 62.5px;
   }
 }
+@media (max-width: 400px) {
+  #timeline #timeline-footer #timeline-footer-wrapper .extra-small-hide {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  #timeline #timeline-footer #timeline-footer-wrapper .mobile-hide {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  #timeline #timeline-footer #timeline-footer-wrapper .medium-hide {
+    display: none;
+  }
+}
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-title,
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
   position: absolute;
@@ -6436,6 +6451,11 @@ main {
 }
 .entry .entry-wrap {
   padding: 10px;
+}
+@media (max-width: 600px) {
+  .entry .entry-wrap {
+    padding: 7px;
+  }
 }
 .entry .entry-wrap .entry-title {
   font-size: 1em;
