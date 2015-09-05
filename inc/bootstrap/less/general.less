@@ -49,9 +49,25 @@ html, body, main, #timeline {
 }
 	
 
+
+
+
+
 main {
 	padding: 60px @global-padding;	
 }
+
+@media (max-width: @mobile-width ) {
+	main {
+		padding-right: 0;
+		padding-left: 0;	
+	}	
+}
+
+
+
+
+
 
 @timeline-header-height: 35px;
 @timeline-footer-height: 40px;
@@ -63,6 +79,10 @@ main {
 	width: 100%;
 	position: relative; // Make sure the footer goes to the bottom
 	background-color: white;
+	
+	@media (max-width: @mobile-width ) {
+		font-size: 0.8em;
+	}
 	
 	#timeline-header, #timeline-loop, #timeline-footer {
 		position: absolute;
@@ -95,6 +115,11 @@ main {
 			bottom: 0;
 			left: @timeline-max-width / 2;
 			right: @timeline-max-width / 2;
+			
+			@media (max-width: @mobile-width ) {
+				left: @timeline-max-width-mobile / 2;
+				right: @timeline-max-width-mobile / 2;
+			}
 		}
 	}
 	
@@ -108,6 +133,11 @@ main {
 			height: 100%;
 			left: @timeline-max-width / 2;
 			right: @timeline-max-width / 2;
+			
+			@media (max-width: @mobile-width ) {
+				left: @timeline-max-width-mobile / 2;
+				right: @timeline-max-width-mobile / 2;
+			}
 			
 			.date-label-title, .date-label-mark {
 				position: absolute;
@@ -130,6 +160,14 @@ main {
 		} 
 	}	
 }
+	
+
+
+
+
+
+
+
 
 @entry-padding: 10px;
 
@@ -154,6 +192,10 @@ main {
 	text-align: center;
 	opacity: 0;
 	width: auto;
+	
+	@media (max-width: @mobile-width ) {
+		max-width: @timeline-max-width-mobile;
+	}
 	
 	.entry-wrap {
 		padding: @entry-padding;

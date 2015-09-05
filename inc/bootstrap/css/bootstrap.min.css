@@ -6327,11 +6327,22 @@ main,
 main {
   padding: 60px 20px;
 }
+@media (max-width: 600px) {
+  main {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
 #timeline {
   display: inline-block;
   width: 100%;
   position: relative;
   background-color: white;
+}
+@media (max-width: 600px) {
+  #timeline {
+    font-size: 0.8em;
+  }
 }
 #timeline #timeline-header,
 #timeline #timeline-loop,
@@ -6364,6 +6375,12 @@ main {
   left: 100px;
   right: 100px;
 }
+@media (max-width: 600px) {
+  #timeline #timeline-loop #timeline-wrapper {
+    left: 62.5px;
+    right: 62.5px;
+  }
+}
 #timeline #timeline-footer {
   bottom: 0;
   height: 40px;
@@ -6374,6 +6391,12 @@ main {
   height: 100%;
   left: 100px;
   right: 100px;
+}
+@media (max-width: 600px) {
+  #timeline #timeline-footer #timeline-footer-wrapper {
+    left: 62.5px;
+    right: 62.5px;
+  }
 }
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-title,
 #timeline #timeline-footer #timeline-footer-wrapper .date-label-mark {
@@ -6405,6 +6428,11 @@ main {
   text-align: center;
   opacity: 0;
   width: auto;
+}
+@media (max-width: 600px) {
+  .entry {
+    max-width: 125px;
+  }
 }
 .entry .entry-wrap {
   padding: 10px;
