@@ -14,6 +14,14 @@
 
     function onPageLoad() {
 	    
+	    $( ".entry-link" ).hover( function() {
+		    if( $( this ).parents( "article" ).hasClass( "hover") ) {
+				$( this ).parents( "article" ).removeClass( "hover");
+			} else {
+				$( this ).parents( "article" ).addClass( "hover");
+			}
+		});
+	    
 	    nineline_load_more_entries();
 	    
 	    /**

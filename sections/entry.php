@@ -14,7 +14,7 @@
 			
 			<h3 class="entry-title<?php nineline_the_entry_title_classes(); ?>">
 				
-				<a href=""><?php the_title(); ?></a>
+				<a class="entry-link" href=""><?php the_title(); ?></a>
 				
 			</h3>
 			
